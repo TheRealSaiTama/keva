@@ -1,0 +1,7 @@
+# sveltekit
+.svelte-kit
+
+# env
+.env
+.env*.local 
+.vercel
