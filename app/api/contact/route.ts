@@ -34,10 +34,11 @@ export async function POST(request: NextRequest) {
 
     // Create Supabase client
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    // Use the Service Role Key for server-side operations
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     
     if (!supabaseUrl || !supabaseKey) {
-      console.error('❌ Missing Supabase environment variables');
+      console.error('❌ Missing Supabase environment variables. Ensure NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set.');
       return NextResponse.json(
         { error: 'Server configuration error. Please contact support.' },
         { status: 500 }
