@@ -25,6 +25,13 @@ export default function Header() {
     { name: 'Contact', id: 'contact' },
   ];
 
+  const navLinks = [
+    { name: "Home", href: "/" },
+    { name: "About", href: "/#portfolio" },
+    { name: "Services", href: "/#services" },
+    { name: "Contact", href: "/#contact" },
+  ];
+
   return (
     <>
       <motion.nav

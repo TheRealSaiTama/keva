@@ -145,7 +145,12 @@ export default function Portfolio() {
   }, [activeProject]);
 
   return (
-    <section className="py-24 sm:py-32 bg-black text-white relative">
+    <motion.section
+      id="portfolio"
+      className="relative bg-black text-white py-24 sm:py-32 overflow-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -199,6 +204,6 @@ export default function Portfolio() {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

@@ -109,7 +109,13 @@ const ServiceCard = ({ service, i }: { service: typeof services[0], i: number })
 export default function Services() {
     const containerRef = useRef<HTMLElement>(null);
     return (
-        <section ref={containerRef} className="relative bg-black text-white py-24 sm:py-32 overflow-hidden">
+        <motion.section
+            id="services"
+            ref={containerRef}
+            className="relative bg-black text-white py-24 sm:py-32 overflow-hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+        >
             <div className="absolute inset-0">
                 <StarryBackground />
             </div>
@@ -135,6 +141,6 @@ export default function Services() {
                     ))}
                 </div>
             </div>
-        </section>
+        </motion.section>
     );
 }
