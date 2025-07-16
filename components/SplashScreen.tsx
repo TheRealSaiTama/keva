@@ -11,13 +11,16 @@ interface SplashScreenProps {
 export default function SplashScreen({ onComplete }: SplashScreenProps) {
   const [showButton, setShowButton] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setWindowSize({ width, height });
+      
+      // Check if it's a mobile device (width less than 768px for tablets and below)
+      setIsMobile(width < 768);
     };
 
     handleResize(); // Set initial size
@@ -27,12 +30,24 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
   }, []);
 
   useEffect(() => {
+    // If it's mobile, skip splash screen immediately
+    if (isMobile) {
+      onComplete();
+      return;
+    }
+
+    // For desktop/laptop, show button after delay
     const timer = setTimeout(() => {
       setShowButton(true);
     }, 1500);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [isMobile, onComplete]);
+
+  // Don't render splash screen on mobile devices
+  if (isMobile) {
+    return null;
+  }
 
   return (
     <motion.div
@@ -44,7 +59,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
       }}
       transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
     >
-      {/* Full screen image */}
+      {/* Full screen image - desktop optimized */}
       <div className="absolute inset-0">
         <Image
           src="/SPLASHSCREEN.png"
@@ -59,7 +74,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
       {/* Subtle gradient overlay for depth */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
 
-      {/* Animated particles */}
+      {/* Animated particles - optimized for desktop */}
       <div className="absolute inset-0">
         {Array.from({ length: 25 }, (_, i) => (
           <motion.div
@@ -84,7 +99,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
         ))}
       </div>
 
-      {/* Content - perfectly centered vertically in bottom half */}
+      {/* Content - desktop centered */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
         <div className="mt-[60vh]"> {/* This pushes content to center of bottom half */}
           {/* Beautiful Next Button - smaller and perfectly centered */}
@@ -108,8 +123,8 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
                   whileTap={{ scale: 0.92 }}
                   transition={{ duration: 0.2 }}
                 >
-                  {/* Button background with glassmorphism - smaller size */}
-                  <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-white/25 to-white/5 backdrop-blur-xl border border-white/40 flex items-center justify-center shadow-2xl">
+                  {/* Button background with glassmorphism */}
+                  <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-white/25 to-white/5 backdrop-blur-xl border border-white/40 flex items-center justify-center shadow-2xl">
                     {/* Animated background on hover */}
                     <motion.div
                       className="absolute inset-0 rounded-full bg-gradient-to-br from-white/40 to-white/15"
@@ -118,7 +133,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
                       transition={{ duration: 0.3 }}
                     />
                     
-                    {/* Beautiful transparent arrow - smaller */}
+                    {/* Beautiful transparent arrow */}
                     <motion.div
                       className="relative z-10 text-white/90"
                       whileHover={{ x: 3 }}
@@ -133,7 +148,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
                         strokeWidth="1.5" 
                         strokeLinecap="round" 
                         strokeLinejoin="round"
-                        className="w-4 h-4 md:w-5 md:h-5"
+                        className="w-5 h-5"
                       >
                         <path d="M5 12h14M12 5l7 7-7 7"/>
                       </svg>
@@ -173,9 +188,9 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
                   <div className="absolute inset-0 rounded-full bg-white/10 blur-2xl scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 </motion.button>
 
-                {/* Elegant button label - perfectly centered below */}
+                {/* Elegant button label */}
                 <motion.p
-                  className="text-white/80 text-sm md:text-base font-light tracking-[0.2em] mt-4 text-center uppercase"
+                  className="text-white/80 text-base font-light tracking-[0.2em] mt-4 text-center uppercase"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7, duration: 0.6 }}

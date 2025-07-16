@@ -454,85 +454,43 @@ input, textarea, select {
   }
 }
 
-/* iOS Safari specific fixes */
-@supports (-webkit-touch-callout: none) {
-  /* Fix for iOS Safari viewport height */
-  .min-h-screen {
+/* Mobile-specific splash screen optimizations */
+@media (max-width: 640px) {
+  /* Ensure proper viewport handling on mobile */
+  html {
+    height: 100vh;
+    height: -webkit-fill-available;
+  }
+  
+  body {
+    min-height: 100vh;
     min-height: -webkit-fill-available;
   }
-}
-
-/* Disable pull-to-refresh on mobile */
-body {
-  overscroll-behavior-y: none;
-}
-
-/* Better image loading */
-img {
-  height: auto;
-  max-width: 100%;
-}
-
-/* Accessibility improvements */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* Mobile-optimized video */
-video {
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-}
-
-/* Loading states */
-.loading {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: .5;
+  
+  /* Prevent zoom on double tap for splash screen */
+  .splash-content {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   }
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+/* Extra small devices optimization */
+@media (max-width: 375px) {
+  /* Additional optimizations for very small screens */
+  .splash-content {
+    padding: 0 1rem;
+  }
 }
 
-::-webkit-scrollbar-track {
-  background: #000;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #8b45ff, #ff458b);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #9d59ff, #ff5999);
-}
-
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Font classes */
-.font-poppins {
-  font-family: 'Poppins', sans-serif;
+/* Safe area optimizations for devices with notches */
+@supports (padding: max(0px)) {
+  .splash-safe-area {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+    padding-top: max(1rem, env(safe-area-inset-top));
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
 }
 
 .service-card {
