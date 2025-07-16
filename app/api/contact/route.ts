@@ -13,6 +13,16 @@ export async function POST(request: NextRequest) {
   console.log('- RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
   
   try {
+    // ---> START DIAGNOSTIC <---
+    try {
+      console.log('🌐 Testing network connectivity to google.com...');
+      await fetch('https://google.com');
+      console.log('✅ Network connectivity test to google.com successful.');
+    } catch (networkError) {
+      console.error('❌ Network connectivity test failed:', networkError);
+    }
+    // ---> END DIAGNOSTIC <---
+
     // Parse the request body
     const body = await request.json();
     console.log('📝 Request body received');
