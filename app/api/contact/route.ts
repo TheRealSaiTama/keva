@@ -6,7 +6,11 @@ import { Resend } from 'resend';
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export async function POST(request: NextRequest) {
-  console.log('🚀 Contact API route called');
+  console.log('🚀 Contact API route called - v2.0');
+  console.log('🔑 Environment check:');
+  console.log('- NEXT_PUBLIC_SUPABASE_URL exists:', !!process.env.NEXT_PUBLIC_SUPABASE_URL);
+  console.log('- SUPABASE_SERVICE_ROLE_KEY exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+  console.log('- RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY);
   
   try {
     // Parse the request body
