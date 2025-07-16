@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [headerBg, setHeaderBg] = useState('bg-transparent');
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
@@ -20,7 +21,7 @@ export default function Header() {
 
   const menuItems = [
     { name: 'Home', id: 'home' },
-    { name: 'About', id: 'services' },
+    { name: 'About', id: 'portfolio' },
     { name: 'Services', id: 'services' },
     { name: 'Contact', id: 'contact' },
   ];
@@ -31,6 +32,15 @@ export default function Header() {
     { name: "Services", href: "/#services" },
     { name: "Contact", href: "/#contact" },
   ];
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+      });
+    }
+  };
 
   return (
     <>
