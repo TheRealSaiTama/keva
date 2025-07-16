@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, Loader2, CheckCircle } from 'lucide-react';
 import StarryBackground from './StarryBackground';
 import { useState, FormEvent } from 'react';
-import { supabase } from '@/lib/supabase';
 import { Toaster, toast } from 'sonner';
 
 export default function Contact() {
@@ -16,27 +15,59 @@ export default function Contact() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    
+    // Client-side validation
     if (!firstName || !email || !message) {
       toast.error('Please fill out all required fields.');
       return;
     }
+
     setLoading(true);
 
-    const { error } = await supabase
-      .from('contacts')
-      .insert([
-        { first_name: firstName, last_name: lastName, email, message },
-      ]);
+    try {
+      console.log('Submitting contact form...', { firstName, lastName, email, messageLength: message.length });
+      
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          message,
+        }),
+      });
 
-    setLoading(false);
-    if (error) {
-      toast.error('Something went wrong. Please try again.');
-    } else {
-      toast.success('Your message has been sent!');
+      console.log('Response status:', response.status);
+      const data = await response.json();
+      console.log('Response data:', data);
+
+      if (!response.ok) {
+        throw new Error(data.error || `Server error: ${response.status}`);
+      }
+
+      // Success!
+      toast.success(data.message || 'Your message has been sent successfully!');
+      
+      // Clear the form
       setFirstName('');
       setLastName('');
       setEmail('');
       setMessage('');
+      
+    } catch (error) {
+      console.error('Contact form submission error:', error);
+      
+      let errorMessage = 'Something went wrong. Please try again.';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
