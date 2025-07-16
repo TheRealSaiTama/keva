@@ -106,7 +106,12 @@ export default function Contact() {
   return (
     <>
       <Toaster position="top-right" richColors />
-      <section className="py-16 sm:py-20 md:py-24 bg-black text-white relative overflow-hidden">
+      <motion.section 
+        id="contact"
+        className="relative bg-black text-white py-24 sm:py-32 overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
         <StarryBackground />
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <motion.div
@@ -252,7 +257,7 @@ export default function Contact() {
             </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
     </>
   );
 }
