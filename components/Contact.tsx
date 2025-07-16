@@ -24,51 +24,83 @@ export default function Contact() {
 
     setLoading(true);
 
-    try {
-      console.log('Submitting contact form...', { firstName, lastName, email, messageLength: message.length });
-      
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          email,
-          message,
-        }),
-      });
+    // Retry logic for network issues
+    const maxRetries = 3;
+    let attempt = 0;
 
-      console.log('Response status:', response.status);
-      const data = await response.json();
-      console.log('Response data:', data);
+    while (attempt < maxRetries) {
+      try {
+        console.log(`Submitting contact form... (attempt ${attempt + 1}/${maxRetries})`, { 
+          firstName, lastName, email, messageLength: message.length 
+        });
+        
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            email,
+            message,
+          }),
+        });
 
-      if (!response.ok) {
-        throw new Error(data.error || `Server error: ${response.status}`);
+        console.log('Response status:', response.status);
+        const data = await response.json();
+        console.log('Response data:', data);
+
+        if (!response.ok) {
+          throw new Error(data.error || `Server error: ${response.status}`);
+        }
+
+        // Success!
+        toast.success(data.message || 'Your message has been sent successfully!');
+        
+        // Clear the form
+        setFirstName('');
+        setLastName('');
+        setEmail('');
+        setMessage('');
+        
+        break; // Exit retry loop on success
+        
+      } catch (error) {
+        console.error(`Contact form submission error (attempt ${attempt + 1}):`, error);
+        
+        attempt++;
+        
+        // Check if it's a network error that we should retry
+        const isNetworkError = error instanceof TypeError && 
+          (error.message.includes('Failed to fetch') || 
+           error.message.includes('network') ||
+           error.message.includes('ERR_NETWORK'));
+        
+        if (isNetworkError && attempt < maxRetries) {
+          // Show a retry message
+          toast.warning(`Network issue detected. Retrying... (${attempt}/${maxRetries})`);
+          // Wait a bit before retrying
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+          continue;
+        }
+        
+        // If we've exhausted retries or it's not a network error, show final error
+        let errorMessage = 'Something went wrong. Please try again.';
+        if (error instanceof Error) {
+          if (error.message.includes('Failed to fetch')) {
+            errorMessage = 'Network connection issue. Please check your internet connection and try again.';
+          } else {
+            errorMessage = error.message;
+          }
+        }
+        
+        toast.error(errorMessage);
+        break; // Exit retry loop on non-network errors or after max retries
       }
-
-      // Success!
-      toast.success(data.message || 'Your message has been sent successfully!');
-      
-      // Clear the form
-      setFirstName('');
-      setLastName('');
-      setEmail('');
-      setMessage('');
-      
-    } catch (error) {
-      console.error('Contact form submission error:', error);
-      
-      let errorMessage = 'Something went wrong. Please try again.';
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      
-      toast.error(errorMessage);
-    } finally {
-      setLoading(false);
     }
+    
+    setLoading(false);
   };
 
   return (
